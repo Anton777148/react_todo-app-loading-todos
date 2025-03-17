@@ -3,18 +3,21 @@ import { client } from '../utils/fetchClient';
 
 export const USER_ID = 2431;
 
-export function getTodos(userId: number) {
-  return client.get<Todo[]>(`/todos?userId=${userId}`);
-}
+export const getTodos = () => {
+  return client.get<Todo[]>(`/todos?userId=${USER_ID}`);
+};
 
-export function createTodo({
-  title,
-  completed,
-  userId = USER_ID,
-}: Omit<Todo, 'id'>) {
-  return client.post<Todo>(`/todos`, { title, completed, userId });
-}
+// Add more methods here
+export const addTodo = ({ userId, title }: Omit<Todo, 'completed' | 'id'>) => {
+  const body = { userId, title, completed: false };
 
-export function deleteTodo(todoId: number) {
-  return client.delete(`/todos/${todoId}`);
-}
+  return client.post<Todo>('/todos', body);
+};
+
+export const deleteTodo = (id: number) => {
+  return client.delete(`/todos/${id}`);
+};
+
+export const updateTodo = (id: number, data: Partial<Todo>) => {
+  return client.patch<Todo>(`/todos/${id}`, data);
+};

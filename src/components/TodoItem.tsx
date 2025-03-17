@@ -1,58 +1,158 @@
+/* eslint-disable no-console */
 import classNames from 'classnames';
-
 import { Todo } from '../types/Todo';
+import { deleteTodo, updateTodo } from '../api/todos';
+import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   todo: Todo;
-  onDelete: (id: number) => void;
-  onToggle: (id: number) => void;
-  isLoading: boolean;
+  todos: Todo[];
+  setTodos: (arg: Todo[]) => void;
+  allTodos: Todo[];
+  setAllTodos: (arg: Todo[]) => void;
+  loadingTodo: boolean;
+  setErrorMessage: (arg: string) => void;
+  setLoadingTodo: (arg: boolean) => void;
+  loadingTodoId: number;
+  setLoadingTodoId: (arg: number) => void;
 };
 
 export const TodoItem: React.FC<Props> = ({
-  todo,
-  onDelete,
-  onToggle,
-  isLoading,
+  todo: { title, id, completed },
+  todos,
+  setTodos,
+  allTodos,
+  setAllTodos,
+  loadingTodo,
+  setErrorMessage,
+  setLoadingTodo,
+  loadingTodoId,
+  setLoadingTodoId,
 }) => {
-  const { title, completed, id } = todo;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(title);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    console.log('isEditing updated:', isEditing);
+  }, [isEditing]);
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const handleSaveTitle = () => {
+    if (editedTitle.trim().length === 0) {
+      setErrorMessage('Title should not be empty');
+
+      return;
+    }
+
+    updateTodo(id, { title: editedTitle })
+      .then((updatedTodo: Todo) => {
+        setAllTodos(allTodos.map(t => (t.id === id ? updatedTodo : t)));
+        setTodos(todos.map(t => (t.id === id ? updatedTodo : t)));
+        setIsEditing(false);
+      })
+      .catch(() => {
+        setErrorMessage('Unable to update todo');
+      });
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedTitle(title);
+  };
+
+  const handleDeleteButton = (todoId: number) => {
+    setLoadingTodo(true);
+    setLoadingTodoId(todoId);
+
+    deleteTodo(todoId)
+      .then(() => {
+        const filtered = allTodos.filter(todoItem => todoItem.id !== todoId);
+
+        setTodos([...filtered]);
+        setAllTodos([...filtered]);
+        setLoadingTodo(false);
+        setLoadingTodoId(-1);
+      })
+      .catch(() => setErrorMessage(`Unable to delete a todo`));
+  };
+
+  const handleToggleTodo = () => {
+    const updatedTodos = todos.map(t =>
+      t.id === id ? { ...t, completed: !t.completed } : t,
+    );
+
+    setTodos(updatedTodos);
+    setAllTodos(updatedTodos);
+  };
 
   return (
     <div
       data-cy="Todo"
-      className={classNames('todo', { completed: completed })}
+      className={classNames('todo', {
+        completed: completed,
+      })}
     >
-      <label className="todo__status-label">
-        {/* This comment is made because it fixes
-          "A form label must be associated with a control" error */}
+      <label className="todo__status-label" aria-label="toggle todo completion">
         <input
           data-cy="TodoStatus"
           type="checkbox"
-          className="todo__status"
+          className={classNames('todo__status')}
           checked={completed}
-          onChange={() => onToggle(id)}
-          disabled={isLoading}
+          onChange={handleToggleTodo}
         />
       </label>
 
-      <span data-cy="TodoTitle" className="todo__title">
-        {title}
-      </span>
+      {isEditing ? (
+        <input
+          data-cy="TodoTitleField"
+          ref={inputRef}
+          type="text"
+          value={editedTitle}
+          onChange={handleTitleChange}
+          onBlur={handleSaveTitle}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              handleSaveTitle();
+            }
 
-      {/* Remove button appears only on hover */}
+            if (e.key === 'Escape') {
+              handleCancelEdit();
+            }
+          }}
+        />
+      ) : (
+        <span
+          data-cy="TodoTitle"
+          className="todo__title"
+          onDoubleClick={handleDoubleClick}
+        >
+          {title}
+        </span>
+      )}
+
       <button
         type="button"
         className="todo__remove"
         data-cy="TodoDelete"
-        onClick={() => onDelete(id)}
+        onClick={() => handleDeleteButton(id)}
+        disabled={isEditing}
       >
         ×
       </button>
 
-      {/* overlay will cover the todo while it is being deleted or updated */}
       <div
         data-cy="TodoLoader"
-        className={classNames('modal overlay', { 'is-active': isLoading })}
+        className={classNames('modal overlay', {
+          'is-active': loadingTodo && id === loadingTodoId,
+        })}
       >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />
