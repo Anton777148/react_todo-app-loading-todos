@@ -15,7 +15,6 @@ export const App: React.FC = () => {
   const [selectedLink, setSelectedLink] = useState(FilterType.All);
   const [errorButton, setErrorButton] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [todosCounter, setTodosCounter] = useState(0);
   const [loadingTodo, setLoadingTodo] = useState(false);
   const [loadingTodoId, setLoadingTodoId] = useState<number>(-1);
 
