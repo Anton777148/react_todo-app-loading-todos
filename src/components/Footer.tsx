@@ -9,7 +9,6 @@ type Props = {
   selectedLink: FilterType;
   setSelectedLink: (arg: FilterType) => void;
   todos: Todo[];
-  setTodos: (arg: Todo[]) => void;
   setAllTodos: (arg: Todo[]) => void;
   setErrorMessage: (arg: string) => void;
 };
@@ -19,7 +18,6 @@ export const Footer: React.FC<Props> = ({
   selectedLink,
   setSelectedLink,
   todos,
-  setTodos,
   setAllTodos,
   setErrorMessage,
 }) => {
@@ -41,7 +39,6 @@ export const Footer: React.FC<Props> = ({
           todo => !successfullyDeletedIds.includes(todo.id),
         );
 
-        setTodos(updatedTodos);
         setAllTodos(updatedTodos);
         if (failedIds.length > 0) {
           setErrorMessage('Unable to delete a todo');

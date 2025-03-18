@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
@@ -11,7 +11,6 @@ import { Footer } from './components/Footer';
 import { FilterType } from './types/FilterType';
 
 export const App: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
   const [allTodos, setAllTodos] = useState<Todo[]>([]);
   const [selectedLink, setSelectedLink] = useState(FilterType.All);
   const [errorButton, setErrorButton] = useState(false);
@@ -28,17 +27,14 @@ export const App: React.FC = () => {
       });
   }, []);
 
-  useEffect(() => {
+  const filteredTodos = useMemo(() => {
     switch (selectedLink) {
       case FilterType.active:
-        setTodos(allTodos.filter(todo => !todo.completed));
-        break;
+        return allTodos.filter(todo => !todo.completed);
       case FilterType.completed:
-        setTodos(allTodos.filter(todo => todo.completed));
-        break;
+        return allTodos.filter(todo => todo.completed);
       default:
-        setTodos(allTodos);
-        break;
+        return allTodos;
     }
   }, [selectedLink, allTodos]);
 
@@ -73,9 +69,8 @@ export const App: React.FC = () => {
         />
 
         <TodoList
-          todos={todos}
+          todos={filteredTodos}
           allTodos={allTodos}
-          setTodos={setTodos}
           setAllTodos={setAllTodos}
           loadingTodo={loadingTodo}
           setErrorMessage={setErrorMessage}
@@ -89,8 +84,7 @@ export const App: React.FC = () => {
             todosCounter={todosCounter}
             selectedLink={selectedLink}
             setSelectedLink={setSelectedLink}
-            todos={todos}
-            setTodos={setTodos}
+            todos={filteredTodos}
             setAllTodos={setAllTodos}
             setErrorMessage={setErrorMessage}
           />

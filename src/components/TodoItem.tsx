@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from 'react';
 type Props = {
   todo: Todo;
   todos: Todo[];
-  setTodos: (arg: Todo[]) => void;
   allTodos: Todo[];
   setAllTodos: (arg: Todo[]) => void;
   loadingTodo: boolean;
@@ -20,7 +19,6 @@ type Props = {
 export const TodoItem: React.FC<Props> = ({
   todo: { title, id, completed },
   todos,
-  setTodos,
   allTodos,
   setAllTodos,
   loadingTodo,
@@ -55,7 +53,7 @@ export const TodoItem: React.FC<Props> = ({
     updateTodo(id, { title: editedTitle })
       .then((updatedTodo: Todo) => {
         setAllTodos(allTodos.map(t => (t.id === id ? updatedTodo : t)));
-        setTodos(todos.map(t => (t.id === id ? updatedTodo : t)));
+
         setIsEditing(false);
       })
       .catch(() => {
@@ -76,7 +74,7 @@ export const TodoItem: React.FC<Props> = ({
       .then(() => {
         const filtered = allTodos.filter(todoItem => todoItem.id !== todoId);
 
-        setTodos([...filtered]);
+        // setTodos([...filtered]);
         setAllTodos([...filtered]);
         setLoadingTodo(false);
         setLoadingTodoId(-1);
@@ -89,7 +87,6 @@ export const TodoItem: React.FC<Props> = ({
       t.id === id ? { ...t, completed: !t.completed } : t,
     );
 
-    setTodos(updatedTodos);
     setAllTodos(updatedTodos);
   };
 

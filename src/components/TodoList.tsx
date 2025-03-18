@@ -4,7 +4,6 @@ import { Todo } from '../types/Todo';
 
 type Props = {
   todos: Todo[];
-  setTodos: (arg: Todo[]) => void;
   allTodos: Todo[];
   setAllTodos: (arg: Todo[]) => void;
   loadingTodo: boolean;
@@ -17,7 +16,6 @@ type Props = {
 export const TodoList: React.FC<Props> = ({
   todos,
   allTodos,
-  setTodos,
   setAllTodos,
   loadingTodo,
   setErrorMessage,
@@ -32,7 +30,6 @@ export const TodoList: React.FC<Props> = ({
           key={todo.id}
           todo={todo}
           todos={todos}
-          setTodos={setTodos}
           allTodos={allTodos}
           setAllTodos={setAllTodos}
           loadingTodo={loadingTodo}
