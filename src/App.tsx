@@ -65,7 +65,6 @@ export const App: React.FC = () => {
           setLoadingTodo={setLoadingTodo}
           setLoadingTodoId={setLoadingTodoId}
         />
-
         <TodoList
           todos={filteredTodos}
           allTodos={allTodos}
@@ -76,7 +75,6 @@ export const App: React.FC = () => {
           loadingTodoId={loadingTodoId}
           setLoadingTodoId={setLoadingTodoId}
         />
-
         {allTodos.length > 0 && (
           <Footer
             selectedLink={selectedLink}
@@ -88,7 +86,6 @@ export const App: React.FC = () => {
           />
         )}
       </div>
-
       <div
         data-cy="ErrorNotification"
         className={classNames(
