@@ -74,7 +74,6 @@ export const TodoItem: React.FC<Props> = ({
       .then(() => {
         const filtered = allTodos.filter(todoItem => todoItem.id !== todoId);
 
-        // setTodos([...filtered]);
         setAllTodos([...filtered]);
         setLoadingTodo(false);
         setLoadingTodoId(-1);
