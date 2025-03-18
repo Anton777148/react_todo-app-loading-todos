@@ -68,8 +68,6 @@ export const Header: React.FC<Props> = ({
     }
   }, [allTodos]);
 
-  const todosCounter = allTodos.filter(todo => !todo.completed).length;
-
   return (
     <header className="todoapp__header">
       <button
@@ -90,10 +88,6 @@ export const Header: React.FC<Props> = ({
           disabled={disabled}
         />
       </form>
-
-      <div className="todoapp__counter">
-        {todosCounter} {todosCounter === 1 ? 'task' : 'tasks'} remaining
-      </div>
     </header>
   );
 };
