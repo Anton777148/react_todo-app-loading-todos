@@ -15,7 +15,6 @@ export const App: React.FC = () => {
   const [selectedLink, setSelectedLink] = useState(FilterType.All);
   const [errorButton, setErrorButton] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [todosCounter, setTodosCounter] = useState(0);
   const [loadingTodo, setLoadingTodo] = useState(false);
   const [loadingTodoId, setLoadingTodoId] = useState<number>(-1);
 
@@ -64,7 +63,6 @@ export const App: React.FC = () => {
           setAllTodos={setAllTodos}
           allTodos={allTodos}
           setLoadingTodo={setLoadingTodo}
-          setTodosCounter={setTodosCounter}
           setLoadingTodoId={setLoadingTodoId}
         />
 
@@ -81,12 +79,12 @@ export const App: React.FC = () => {
 
         {allTodos.length > 0 && (
           <Footer
-            todosCounter={todosCounter}
             selectedLink={selectedLink}
             setSelectedLink={setSelectedLink}
             todos={filteredTodos}
             setAllTodos={setAllTodos}
             setErrorMessage={setErrorMessage}
+            allTodos={allTodos}
           />
         )}
       </div>

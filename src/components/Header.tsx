@@ -7,7 +7,6 @@ type Props = {
   setAllTodos: (arg: Todo[]) => void;
   allTodos: Todo[];
   setLoadingTodo: (arg: boolean) => void;
-  setTodosCounter: (arg: number) => void;
   setLoadingTodoId: (arg: number) => void;
 };
 
@@ -16,13 +15,11 @@ export const Header: React.FC<Props> = ({
   setAllTodos,
   allTodos,
   setLoadingTodo,
-  setTodosCounter,
   setLoadingTodoId,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [disabled, setDisabled] = useState(false);
   const inputFocus = useRef<HTMLInputElement>(null);
-  const [enableCounter, setEnableCounter] = useState(true);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
@@ -45,7 +42,6 @@ export const Header: React.FC<Props> = ({
       setDisabled(true);
       setLoadingTodo(true);
       setLoadingTodoId(tempTodo.id);
-      setEnableCounter(false);
       setAllTodos([...allTodos, tempTodo]);
 
       addTodo(newTodo)
@@ -53,7 +49,6 @@ export const Header: React.FC<Props> = ({
           const todos = allTodos.slice(0, allTodos.length);
 
           setAllTodos([...todos, newTodoFromServer]);
-          setEnableCounter(true);
           setLoadingTodo(false);
           setLoadingTodoId(-1);
           setDisabled(false);
@@ -73,11 +68,7 @@ export const Header: React.FC<Props> = ({
     }
   }, [allTodos]);
 
-  useEffect(() => {
-    if (enableCounter) {
-      setTodosCounter(allTodos.filter(todo => !todo.completed).length);
-    }
-  }, [allTodos, enableCounter, setTodosCounter]);
+  const todosCounter = allTodos.filter(todo => !todo.completed).length;
 
   return (
     <header className="todoapp__header">
@@ -99,6 +90,10 @@ export const Header: React.FC<Props> = ({
           disabled={disabled}
         />
       </form>
+
+      <div className="todoapp__counter">
+        {todosCounter} {todosCounter === 1 ? 'task' : 'tasks'} remaining
+      </div>
     </header>
   );
 };

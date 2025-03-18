@@ -29,7 +29,6 @@ export const TodoList: React.FC<Props> = ({
         <TodoItem
           key={todo.id}
           todo={todo}
-          todos={todos}
           allTodos={allTodos}
           setAllTodos={setAllTodos}
           loadingTodo={loadingTodo}

@@ -1,26 +1,41 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Todo } from '../types/Todo';
 import { FilterType } from '../types/FilterType';
 import { deleteTodo } from '../api/todos';
 
 type Props = {
-  todosCounter: number;
   selectedLink: FilterType;
   setSelectedLink: (arg: FilterType) => void;
   todos: Todo[];
   setAllTodos: (arg: Todo[]) => void;
   setErrorMessage: (arg: string) => void;
+  allTodos: Todo[];
 };
 
 export const Footer: React.FC<Props> = ({
-  todosCounter,
   selectedLink,
   setSelectedLink,
   todos,
   setAllTodos,
   setErrorMessage,
+  allTodos,
 }) => {
+  const [remainingTodosCount, setRemainingTodosCount] = useState(0);
+
+  useEffect(() => {
+    switch (selectedLink) {
+      case FilterType.completed:
+        setRemainingTodosCount(allTodos.filter(todo => !todo.completed).length);
+        break;
+      case FilterType.active:
+        setRemainingTodosCount(todos.filter(todo => !todo.completed).length);
+        break;
+      default:
+        setRemainingTodosCount(todos.filter(todo => !todo.completed).length);
+    }
+  }, [selectedLink, todos, allTodos]);
+
   const handleClearCompleted = () => {
     const allCompletedTodos = todos.filter(todo => todo.completed);
 
@@ -50,7 +65,7 @@ export const Footer: React.FC<Props> = ({
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
-        {`${todosCounter} items left`}
+        {`${remainingTodosCount} items left`}
       </span>
 
       <nav className="filter" data-cy="Filter">

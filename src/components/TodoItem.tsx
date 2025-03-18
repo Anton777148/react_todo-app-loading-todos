@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 
 type Props = {
   todo: Todo;
-  todos: Todo[];
   allTodos: Todo[];
   setAllTodos: (arg: Todo[]) => void;
   loadingTodo: boolean;
@@ -18,7 +17,6 @@ type Props = {
 
 export const TodoItem: React.FC<Props> = ({
   todo: { title, id, completed },
-  todos,
   allTodos,
   setAllTodos,
   loadingTodo,
@@ -82,7 +80,7 @@ export const TodoItem: React.FC<Props> = ({
   };
 
   const handleToggleTodo = () => {
-    const updatedTodos = todos.map(t =>
+    const updatedTodos = allTodos.map((t: Todo) =>
       t.id === id ? { ...t, completed: !t.completed } : t,
     );
 
